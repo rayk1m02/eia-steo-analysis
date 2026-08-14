@@ -80,8 +80,8 @@ df_steo.dtypes
 df_steo
 df_steo = df_steo.rename(columns={
   "period": "Date", 
-  "SeriesID": "ID",
-  "SeriesDescription": "Description",
+  "seriesId": "ID",
+  "seriesDescription": "Description",
   "value": "Value",
   "unit": "Unit"
   })
@@ -120,3 +120,11 @@ df_steo_pct = df_tx.pivot_table(                                 # This builds o
   aggfunc="mean"
   )
 df_steo_pct
+df_steo_pct.columns                                     # Index(['COPREF', 'COPRPM'], dtype='str', name='ID')
+df_steo_pct = df_steo_pct.rename_axis(columns=None)     # Remove "ID" label sitting on top of "Year" index
+df_steo_pct
+df_steo_pct = df_steo_pct.rename(columns={"COPREF": "EagleFordVol", "COPRPM": "PermianVol"})
+df_steo_pct
+# Appending USVolume to our df_steo_pct dataframe
+# Steps to take
+# df_steo_pct["USVol"] = 
