@@ -46,7 +46,7 @@ DATA PLAN
 - OBJECTIVES/LEARNINGS:
   - create a DataFrame and convert dtypes to datetime, numeric, etc as needed
   - analysis against US total crude production (%)
-    - what % does the Permian represent and similarly, Eagle Ford? What about combined?
+    - year by year what was the % of Permian and Eagle Ford against US Crude Production? individually and combined?
     - compute year-over-year growth rate per region. .pct_change()
   - programmatically find month to month dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each month and compare 
@@ -77,16 +77,37 @@ df_steo
 df_steo["period"] = pd.to_datetime(df_steo["period"])
 df_steo["value"] = pd.to_numeric(df_steo["value"])
 df_steo.dtypes
-
-# period               datetime64[us]
-# seriesId                        str
-# seriesDescription               str
-# value                       float64
-# unit                            str
+df_steo
+df_steo = df_steo.rename(columns={
+  "period": "Date", 
+  "SeriesID": "ID",
+  "SeriesDescription": "Description",
+  "value": "Value",
+  "unit": "Unit"
+  })
+df_steo
+df_steo.dtypes
+# Date                 datetime64[us]
+# SeriesID                        str
+# SeriesDescription               str
+# Value                       float64
+# Unit                            str
 # dtype: object
 
 ''' 
 analysis against US total crude production (%) 
-  what % does the Permian represent and similarly, Eagle Ford? What about combined?
+  year by year what was the % of Permian and Eagle Ford against US Crude Production? individually and combined?
   compute year-over-year growth rate per region. .pct_change()
 '''
+# output example:
+# Year PermianVolume EagleFordVolume USVolume PermianVolumePct EagelFordVolumePct CombinedPct
+# 2027
+# 2026
+# 2025
+
+# create a new DataFrame called df_steo_pct
+# group by the year of each Date, ID in df_steo only for COPREF, COPRPM. then use pivot
+# then we obtain the Average of the Value field 
+# append a group by US crude Average Value
+# then append column what we caluclated earlier for EF and PM each divided by the US crude Average value
+# and lastly append column of both EF and PM over US Crude Average value
