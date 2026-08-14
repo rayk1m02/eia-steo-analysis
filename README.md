@@ -4,21 +4,21 @@ Pulling and analyzing the U.S. Energy Information Administration's Short-Term En
 
 ## Setup
 
-'''bash
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install requests pandas python-dotenv matplotlib
-'''
+```
 
-Create a '.env' file:
-'''
+Create a `.env` file:
+```
 EIA_TOKEN=your_key_here
-'''
+```
 
 ## Usage
-'''bash
+```bash
 python steo_analysis.py
-'''
+```
 
 ## Data Sources
 [EIA Short-Term Energy Outlook](https://www.eia.gov/outlooks/steo/) —
