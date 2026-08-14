@@ -1,6 +1,6 @@
 # EIA STEO Analysis
 
-Pulling and analyzing the U.S. Energy Information Administration's Short-Term Energy Outlook via the EIA API. This project focuses on crude oil production and supply projections.
+Pulling and analyzing the U.S. Energy Information Administration's Short-Term Energy Outlook via the EIA API. This project focuses on crude oil production and supply projections from the Permian and Eagle Ford basins, the two major Texas shale plays.
 
 ## Setup
 
