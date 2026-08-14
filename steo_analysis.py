@@ -126,5 +126,18 @@ df_steo_pct
 df_steo_pct = df_steo_pct.rename(columns={"COPREF": "EagleFordVol", "COPRPM": "PermianVol"})
 df_steo_pct
 # Appending USVolume to our df_steo_pct dataframe
-# Steps to take
-# df_steo_pct["USVol"] = 
+df_us = df_yearly[df_yearly["ID"].isin(["COPRPUS"])]
+df_us
+df_us_pivot = df_us.pivot_table(
+  values="Value",
+  index="Year",
+  columns="ID",
+  aggfunc="mean"
+)
+df_us_pivot
+df_us_pivot = df_us_pivot.rename_axis(columns=None)
+df_us_pivot = df_us_pivot.rename(columns={"COPRPUS": "USVol"})
+df_us_pivot
+# use .merge()
+df_steo_pct = df_steo_pct.merge(df_us_pivot, on="Year")
+df_steo_pct
