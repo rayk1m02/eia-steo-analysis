@@ -141,3 +141,13 @@ df_us_pivot
 # use .merge()
 df_steo_pct = df_steo_pct.merge(df_us_pivot, on="Year")
 df_steo_pct
+# Appending EagleFordPct, PermianPct, and CombinedPct
+df_steo_pct["EagleFordPct"] = (df_steo_pct["EagleFordVol"] / df_steo_pct["USVol"]) * 100
+df_steo_pct["PermianPct"] = (df_steo_pct["PermianVol"] / df_steo_pct["USVol"]) * 100
+df_steo_pct["CombinedPct"] = ((df_steo_pct["EagleFordVol"] + df_steo_pct["PermianVol"]) / df_steo_pct["USVol"]) * 100
+df_steo_pct.style.format({
+  "EagleFordPct": "{:.1f}%",
+  "PermianPct": "{:.1f}%",
+  "CombinedPct": "{:.1f}%"
+})
+df_steo_pct
