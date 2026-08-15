@@ -50,8 +50,7 @@ DATA PLAN
     - compute year-over-year growth rate per region. .pct_change()
   - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each month and compare 
-    - compute .rolling() average and then measure dips against the trend line
-      - then do some research to see what world events might have caused them
+    - then do some research to see what world events might have caused them
   - correlation with crude oil price, pull WTI/Brent price series and use method .corr()
     - production usually lags price changes (drilling takes months), .shift() a few months before correlating and analyze
   - line chart / graph that displays crude production volume across the three regions
@@ -168,8 +167,7 @@ df_steo_pct.style.format({
 '''   
 - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each year and compare 
-    - compute .rolling() average and then measure dips against the trend line
-      - then do research on what world events might have caused these dips
+    - then do research on what world events might have caused these dips
 '''
 # obtain absolute value of the growth rate
 # compute mean of the absolute values
@@ -253,5 +251,11 @@ df_steo_z_filtered_strict
 # rolling average answers a more local question of how a certain year behaved relative to its immediate surrounding years. How was this year unusual relative to what was already happening around it? instead of using the play's entire history.
 
 #   - do research on what world events might have caused these dips
-# 2011 Eagle Ford: production surged six-fold over the year as horizontal drilling paths were completed and hydraulic fracturing expanded across STX. Over 2800 drilling permits where issued and rig and well completions were accelerating production. 
-# 2018 Permian Basin: operators routinely drilled "super-lateral" extensions (streching 2-3 miles instead of 1 mile like in 2011). Also there was an increase in scale of completions to open up oil-bearing shale. The Permian is also multi layered, and operators mastered pad drilling (using a single surface rig to drill dozen horizontal wells in different subterranean layers simultaneously). All of this caused a major infrastructure crisis in 2018 as there were pipeline shortages (too much oil) and subsequently local prices collapsed ($15-$18 less a barrel!) than the U.S. benchmark pricing. Also operators had to burn off significant amounts of natural gas just to keep the oil flowing.
+# 2011 Eagle Ford: 
+  # Production surged six-fold over the year as horizontal drilling paths were completed and hydraulic fracturing expanded across STX. 
+  # Over 2800 drilling permits where issued and rig and well completions were accelerating production. 
+# 2018 Permian Basin: 
+  # Operators routinely drilled "super-lateral" extensions (streching 2-3 miles instead of 1 mile like in 2011). 
+  # Also there was an increase in scale of completions to open up oil-bearing shale. The Permian is multi layered, and operators mastered pad drilling (using a single surface rig to drill dozen horizontal wells in different subterranean layers simultaneously).
+  # All of this caused a major infrastructure crisis in 2018 as there were pipeline shortages (too much oil) and subsequently local prices collapsed ($15-$18 less a barrel!) than the U.S. benchmark pricing. 
+  # Operators also had to burn off significant amounts of natural gas just to keep the oil flowing.
