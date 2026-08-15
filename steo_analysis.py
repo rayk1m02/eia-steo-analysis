@@ -99,7 +99,7 @@ analysis against US total crude production (%)
   A) year by year what was the % of Permian and Eagle Ford against US Crude Production? individually and combined?
   B) compute year-over-year growth rate per region. .pct_change()
 '''
-# desired output for part A:
+# desired output for year by year %
 # Year PermianVolume EagleFordVolume USVolume PermianVolumePct EagelFordVolumePct CombinedPct
 # 2027
 # 2026
@@ -151,3 +151,23 @@ df_steo_pct.style.format({
   "CombinedPct": "{:.1f}%"
 })
 df_steo_pct
+# compute year-over-year growth rate per region. .pct_change()
+df_steo_pct["EagleFordGrowthRate"] = df_steo_pct["EagleFordVol"].pct_change() * 100
+df_steo_pct["PermianGrowthRate"] = df_steo_pct["PermianVol"].pct_change() * 100
+df_steo_pct["USGrowthRate"] = df_steo_pct["USVol"].pct_change() * 100
+df_steo_pct
+df_steo_pct.style.format({
+  "EagleFordPct": "{:.1f}%",
+  "PermianPct": "{:.1f}%",
+  "CombinedPct": "{:.1f}%",
+  "EagleFordGrowthRate": "{:.1f}%",
+  "PermianGrowthRate": "{:.1f}%",
+  "USGrowthRate": "{:.1f}%",
+})
+
+'''   
+- programmatically find month to month dips or significant production margins (threshold of over 1.5x the mean)
+    - use z-score instead for each month and compare 
+    - compute .rolling() average and then measure dips against the trend line
+      - then do some research to see what world events might have caused them
+'''
