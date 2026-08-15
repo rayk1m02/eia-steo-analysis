@@ -169,7 +169,7 @@ df_steo_pct.style.format({
 - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each year and compare 
     - compute .rolling() average and then measure dips against the trend line
-      - then do some research to see what world events might have caused them
+      - then do research on what world events might have caused these dips
 '''
 # obtain absolute value of the growth rate
 # compute mean of the absolute values
@@ -249,5 +249,7 @@ df_steo_z_filtered_strict
 
 # Our results show 2011 and 2018 as the only years with a z_score > 2. 2011 indicates Eagle Ford's outlier (growth rate of 217.37%) and 2018 indicates Permian's outlier with a growth rate of 39.74%. Each play had its own distinct, statistically significant growth years and is also consistent with Eagle Ford's earlier boom and Permian's later, larger one.
 
-# - compute .rolling() average and then measure dips against the trend line
-#   - then do some research to see what world events might have caused them
+# we are going to drop .rolling() average for now, as we have the mean and z-score analysis fairly consistent with each others findings. 
+# rolling average answers a more local question of how a certain year behaved relative to its immediate surrounding years. How was this year unusual relative to what was already happening around it? instead of using the play's entire history.
+
+#   - do research on what world events might have caused these dips
