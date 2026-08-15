@@ -51,8 +51,8 @@ DATA PLAN
   - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each month and compare 
     - then do some research to see what world events might have caused them
-  - correlation with crude oil price, pull WTI/Brent price series and use method .corr()
-    - production usually lags price changes (drilling takes months), .shift() a few months before correlating and analyze
+  - correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
+    - methods: .corr(), .shift()
   - line chart / graph that displays crude production volume across the three regions
   - export findings to csv file
   - refactor code into functions, make this a real reusable pipeline (at the basic level)
@@ -259,3 +259,8 @@ df_steo_z_filtered_strict
   # Also there was an increase in scale of completions to open up oil-bearing shale. The Permian is multi layered, and operators mastered pad drilling (using a single surface rig to drill dozen horizontal wells in different subterranean layers simultaneously).
   # All of this caused a major infrastructure crisis in 2018 as there were pipeline shortages (too much oil) and subsequently local prices collapsed ($15-$18 less a barrel!) than the U.S. benchmark pricing. 
   # Operators also had to burn off significant amounts of natural gas just to keep the oil flowing.
+
+'''
+- correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
+  - methods: .corr(), .shift()
+'''
