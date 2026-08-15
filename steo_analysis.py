@@ -113,7 +113,7 @@ df_yearly.insert(                                                 # extract and 
 df_yearly                                                         
 df_tx = df_yearly[df_yearly["ID"].isin(["COPREF", "COPRPM"])]    # grab only Eagle Ford and Permian
 df_tx
-df_steo_pct = df_tx.pivot_table(                                 # This builds out the first three columns of our desired dataframe (to some degree)
+df_steo_pct = df_tx.pivot_table(                                 # This builds out the first three columns of our desired dataframe
   values="Value",                                                # ID   COPREF  COPRPM
   index="Year",                                                  # Year
   columns="ID",                                                  # YYYY    x      y
@@ -167,7 +167,7 @@ df_steo_pct.style.format({
 
 '''   
 - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
-    - use z-score instead for each month and compare 
+    - use z-score instead for each year and compare 
     - compute .rolling() average and then measure dips against the trend line
       - then do some research to see what world events might have caused them
 '''
@@ -194,4 +194,47 @@ df_steo_dips["PermianAbs"].mean()   # 12.0359
 df_steo_dips["USAbs"].mean()        # 7.3733
 df_steo_dips
 # the .mean() on the absolute values tells us the magnitude of the year-over-year swings in either direction.
-# now, find which years had a abs swing greater than 1.5x the mean for the respective regions
+# now, find which years had a swing greater than 1.5x the mean for the respective regions
+df_steo_dips = df_steo_dips.round(2)
+df_steo_dips
+df_steo_dips = df_steo_dips.rename(columns={
+                  "EagleFordGrowthRate": "EF_GrowthRate",
+                  "PermianGrowthRate": "PB_GrowthRate",
+                  "USGrowthRate": "US_GrowthRate",
+                  "EagleFordAbs": "EF_Abs",
+                  "PermianAbs": "PB_Abs",
+                  "USAbs": "US_Abs"
+                })
+df_steo_dips
+df_steo_dips["EF_Threshold"] = df_steo_dips["EF_Abs"] > df_steo_dips["EF_Abs"].mean() * 1.5
+df_steo_dips["PB_Threshold"] = df_steo_dips["PB_Abs"] > df_steo_dips["PB_Abs"].mean() * 1.5
+df_steo_dips["US_Threshold"] = df_steo_dips["US_Abs"] > df_steo_dips["US_Abs"].mean() * 1.5
+df_steo_dips
+df_steo_threshold = df_steo_dips[
+  df_steo_dips["EF_Threshold"] | df_steo_dips["PB_Threshold"] | df_steo_dips["US_Threshold"]
+].copy()
+df_steo_threshold     # Years where production margin was > 1.5x the mean
+
+# From the results, we can infer that Eagle Ford drove the early shale boom, with significant percentage swings of up to 217% in 2011, while the Permian Basin became the dominant producer from 2014 onwards. We can also infer that percentage swings shrink as a base grows.
+
+# - use z-score instead for each year and compare 
+# - compute .rolling() average and then measure dips against the trend line
+#   - then do some research to see what world events might have caused them
+
+# Z-score is the conventional, recognized way to account for spread. We will use z-score instead of the arbitrary 1.5x mean threshold to find statistical outliers. Z-score is computed by (value - mean) / standard_deviation.
+df_steo_z = df_steo_dips.copy()
+df_steo_z["EF_z"] = (df_steo_z["EF_Abs"] - df_steo_z["EF_Abs"].mean()) / df_steo_z["EF_Abs"].std()
+df_steo_z["PB_z"] = (df_steo_z["PB_Abs"] - df_steo_z["PB_Abs"].mean()) / df_steo_z["PB_Abs"].std()
+df_steo_z["US_z"] = (df_steo_z["US_Abs"] - df_steo_z["US_Abs"].mean()) / df_steo_z["US_Abs"].std()
+df_steo_z = df_steo_z.round(2)
+df_steo_z
+# filter by any Threshold columns with True in it or z score columns that have abs() > 1.5 (looser cutoff for initial exploration)
+df_steo_z_filtered = df_steo_z[
+  df_steo_z["EF_Threshold"] | 
+  df_steo_z["PB_Threshold"] | 
+  df_steo_z["US_Threshold"] | 
+  (df_steo_z["EF_z"].abs() > 1.5) |
+  (df_steo_z["PB_z"].abs() > 1.5) |
+  (df_steo_z["US_z"].abs() > 1.5)
+].copy()
+df_steo_z_filtered
