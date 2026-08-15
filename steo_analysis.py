@@ -48,7 +48,7 @@ DATA PLAN
   - analysis against US total crude production (%)
     - year by year what was the % of Permian and Eagle Ford against US Crude Production? individually and combined?
     - compute year-over-year growth rate per region. .pct_change()
-  - programmatically find month to month dips or significant production margins (threshold of over 1.5x the mean)
+  - programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each month and compare 
     - compute .rolling() average and then measure dips against the trend line
       - then do some research to see what world events might have caused them
@@ -166,8 +166,32 @@ df_steo_pct.style.format({
 })
 
 '''   
-- programmatically find month to month dips or significant production margins (threshold of over 1.5x the mean)
+- programmatically find year to year dips or significant production margins (threshold of over 1.5x the mean)
     - use z-score instead for each month and compare 
     - compute .rolling() average and then measure dips against the trend line
       - then do some research to see what world events might have caused them
 '''
+# obtain absolute value of the growth rate
+# compute mean of the absolute values
+# filter df_steo_pct for rows where abs_val exceeed 1.5 * mean
+df_steo_dips = df_steo_pct.reset_index()[["Year", "EagleFordGrowthRate", "PermianGrowthRate", "USGrowthRate"]].copy()
+df_steo_dips
+df_steo_dips["EagleFordAbs"] = df_steo_dips["EagleFordGrowthRate"].abs()
+df_steo_dips["PermianAbs"] = df_steo_dips["PermianGrowthRate"].abs()
+df_steo_dips["USAbs"] = df_steo_dips["USGrowthRate"].abs()
+df_steo_dips
+  # col_data = df_steo_dips["PermianAbs"]
+  # df_steo_dips = df_steo_dips.drop(columns=["PermianAbs"])
+  # df_steo_dips.insert(
+  #   loc=df_steo_dips.columns.get_loc("EagleFordAbs") + 1,
+  #   column="PermianAbs",
+  #   value=col_data
+  # )
+  # df_steo_dips = df_steo_dips.drop(columns=["PermianGrowthAbs"])
+  # df_steo_dips
+df_steo_dips["EagleFordAbs"].mean() # 32.8582
+df_steo_dips["PermianAbs"].mean()   # 12.0359
+df_steo_dips["USAbs"].mean()        # 7.3733
+df_steo_dips
+# the .mean() on the absolute values tells us the magnitude of the year-over-year swings in either direction.
+# now, find which years had a abs swing greater than 1.5x the mean for the respective regions
