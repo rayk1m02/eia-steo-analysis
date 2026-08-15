@@ -218,8 +218,6 @@ df_steo_threshold     # Years where production margin was > 1.5x the mean
 # From the results, we can infer that Eagle Ford drove the early shale boom, with significant percentage swings of up to 217% in 2011, while the Permian Basin became the dominant producer from 2014 onwards. We can also infer that percentage swings shrink as a base grows.
 
 # - use z-score instead for each year and compare 
-# - compute .rolling() average and then measure dips against the trend line
-#   - then do some research to see what world events might have caused them
 
 # Z-score is the conventional, recognized way to account for spread. We will use z-score instead of the arbitrary 1.5x mean threshold to find statistical outliers. Z-score is computed by (value - mean) / standard_deviation.
 df_steo_z = df_steo_dips.copy()
@@ -238,3 +236,18 @@ df_steo_z_filtered = df_steo_z[
   (df_steo_z["US_z"].abs() > 1.5)
 ].copy()
 df_steo_z_filtered
+# applying stricter cutoff with +- 2 z-score threshold
+df_steo_z_filtered_strict = df_steo_z_filtered[
+  # df_steo_z["EF_Threshold"] | 
+  # df_steo_z["PB_Threshold"] | 
+  # df_steo_z["US_Threshold"] | 
+  (df_steo_z_filtered["EF_z"].abs() > 2) |
+  (df_steo_z_filtered["PB_z"].abs() > 2) |
+  (df_steo_z_filtered["US_z"].abs() > 2)
+].copy()
+df_steo_z_filtered_strict
+
+# Our results show 2011 and 2018 as the only years with a z_score > 2. 2011 indicates Eagle Ford's outlier (growth rate of 217.37%) and 2018 indicates Permian's outlier with a growth rate of 39.74%. Each play had its own distinct, statistically significant growth years and is also consistent with Eagle Ford's earlier boom and Permian's later, larger one.
+
+# - compute .rolling() average and then measure dips against the trend line
+#   - then do some research to see what world events might have caused them
