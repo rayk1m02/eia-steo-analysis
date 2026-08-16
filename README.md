@@ -20,6 +20,7 @@ EIA_TOKEN=your_key_here
 python steo_analysis.py
 ```
 
+## Findings
 ![Crude production volume chart](images/volGraph.png)
 
 ## Data Sources
