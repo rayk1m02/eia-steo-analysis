@@ -374,3 +374,8 @@ plt.ylabel("Million Barrels per Day")
 plt.xlabel("Date")
 plt.tight_layout()
 plt.show()
+
+'''
+  - export findings to csv file
+  - refactor code into functions, make this a real reusable pipeline (at the basic level)
+'''
