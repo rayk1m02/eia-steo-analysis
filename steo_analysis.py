@@ -325,3 +325,41 @@ df_steo_crude_merged = df_steo_crude.merge(
 )
 df_steo_crude_merged = df_steo_crude_merged.rename(columns={"Value":"Crude_Price"})
 df_steo_crude_merged
+
+# .shift(x) brings the values down by x. So .shift(1) would have each date correspond to the previous months crude price
+
+df_steo_crude_merged["Crude_Price_Lag1"] = df_steo_crude_merged["Crude_Price"].shift(1)
+df_steo_crude_merged["Crude_Price_Lag3"] = df_steo_crude_merged["Crude_Price"].shift(3)
+df_steo_crude_merged["Crude_Price_Lag6"] = df_steo_crude_merged["Crude_Price"].shift(6)
+df_steo_crude_merged["Crude_Price_Lag12"] = df_steo_crude_merged["Crude_Price"].shift(12)
+df_steo_crude_merged
+
+# .corr() - +1 indicates positive relationship, 0 no relationship, -1 negative relationship
+
+# Eagle Ford
+df_steo_crude_merged["EF_Vol"].corr(df_steo_crude_merged["Crude_Price"]) # -0.2773124592336688
+df_steo_crude_merged["EF_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag1"]) # -0.23355681868684805
+df_steo_crude_merged["EF_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag3"]) # -0.19249605853744672
+df_steo_crude_merged["EF_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag6"]) # -0.1843092117464142
+df_steo_crude_merged["EF_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag12"]) # -0.14554095573179343
+
+# Permian Basin
+df_steo_crude_merged["PB_Vol"].corr(df_steo_crude_merged["Crude_Price"]) # -0.09642829972633593
+df_steo_crude_merged["PB_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag1"]) # -0.08499699968042564
+df_steo_crude_merged["PB_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag3"]) # -0.08866294837861996
+df_steo_crude_merged["PB_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag6"]) # -0.12300799989103951
+df_steo_crude_merged["PB_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag12"]) # -0.17936447790183874
+
+# USA
+df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price"]) # 0.2994777836229339
+df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag1"]) # 0.30931135201190657
+df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag3"]) # 0.32345528594977335
+df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag6"]) # 0.3457113314492093
+df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag12"]) # 0.38076234228994393
+
+# Price alone is a weak indicator of production across the board.
+# The shape of the weakness differs by region, however. 
+# US Totals show a modest lagged relationship that indicates the "drilling takes time" notion.
+# Permian shows an unstable relationship, perhaps growth is more so driven by infrastructure than price response.
+# Eagle Ford shows a persistent negative relationship.
+
