@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 import os
+import matplotlib.pyplot as plt
 
 load_dotenv()
 api_key = os.getenv("EIA_TOKEN")
@@ -261,7 +262,7 @@ df_steo_z_filtered_strict
   # Operators also had to burn off significant amounts of natural gas just to keep the oil flowing.
 
 '''
-- correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
+- correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6,12 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
   - methods: .corr(), .shift()
 '''
 '''
@@ -363,3 +364,13 @@ df_steo_crude_merged["US_Vol"].corr(df_steo_crude_merged["Crude_Price_Lag12"]) #
 # Permian shows an unstable relationship, perhaps growth is more so driven by infrastructure than price response.
 # Eagle Ford shows a persistent negative relationship.
 
+''' - line chart / graph that displays crude production volume across the three regions '''
+df_steo_crude = df_steo_crude.set_index("Date")
+df_steo_crude
+plt.figure(figsize=(10,6))
+df_steo_crude.plot(ax=plt.gca())
+plt.title("Crude Oil Production Volume: Eagle Ford, Permian, and US Total")
+plt.ylabel("Million Barrels per Day")
+plt.xlabel("Date")
+plt.tight_layout()
+plt.show()
