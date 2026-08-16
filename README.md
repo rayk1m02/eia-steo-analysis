@@ -20,6 +20,8 @@ EIA_TOKEN=your_key_here
 python steo_analysis.py
 ```
 
+![Crude production volume chart](images/volGraph.png)
+
 ## Data Sources
 [EIA Short-Term Energy Outlook](https://www.eia.gov/outlooks/steo/) —
 monthly-updated 18-month-ahead forecasts covering production,
