@@ -264,3 +264,64 @@ df_steo_z_filtered_strict
 - correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
   - methods: .corr(), .shift()
 '''
+'''
+output
+df_steo_lag
+Date        EF_Vol     PB_Vol       US_Vol   Crude_Price    Crude_Price_Lag1    Crude_Price_Lag2    Crude_Price_Lag 3
+YYYY-MM-DD    
+'''
+df_steo_crude = df_steo.copy()
+df_steo_crude 
+df_steo_crude = df_steo_crude.pivot_table(
+    values="Value",
+    index="Date",
+    columns="ID",
+    aggfunc="sum"
+  )
+df_steo_crude
+df_steo_crude = df_steo_crude.rename(columns={
+  "COPREF": "EF_Vol",
+  "COPRPM": "PB_Vol",
+  "COPRPUS": "US_Vol"
+})
+df_steo_crude = df_steo_crude.rename_axis(columns=None) # Get rid of "ID" axis name
+df_steo_crude = df_steo_crude.sort_index()
+df_steo_crude = df_steo_crude.round(3)
+df_steo_crude
+
+# Pulling WTI Crude Oil Price (West Texas Intermediate)
+param_WTI = {
+  "api_key": api_key,
+  "data[]": "value",
+  "facets[seriesId][]": ["WTIPUUS"],
+  "frequency": "monthly",
+  "sort[0][column]": "period",
+  "sort[0][direction]": "desc",
+  "length": 5000,
+}
+response_WTI = requests.get(url, params=param_WTI)
+data_WTI = response_WTI.json()
+data_WTI.keys()
+data_WTI["response"].keys()
+data_crude_price = data_WTI["response"]["data"]
+df_crude_price = pd.DataFrame(data_crude_price)
+df_crude_price["period"] = pd.to_datetime(df_crude_price["period"])
+df_crude_price["value"] = pd.to_numeric(df_crude_price["value"])
+df_crude_price = df_crude_price.rename(columns={
+  "period": "Date",
+  "seriesId": "ID",
+  "seriesDescription": "Description",
+  "value": "Value",
+  "unit": "Unit"
+})
+df_crude_price.dtypes
+df_crude_price
+
+# Merge df_steo_crude with df_crude_price. Append the Value (price) and match on Date field. 
+df_steo_crude = df_steo_crude.reset_index()
+df_steo_crude_merged = df_steo_crude.merge(
+  df_crude_price[["Date", "Value"]],
+  on="Date"
+)
+df_steo_crude_merged = df_steo_crude_merged.rename(columns={"Value":"Crude_Price"})
+df_steo_crude_merged
