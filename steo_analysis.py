@@ -381,10 +381,11 @@ df_steo_pct.to_csv("texas_production_and_share.csv", index=True)
 df_steo_crude_merged.to_csv("texas_production_price_correlation.csv", index=True)
 
 ''' - refactor code into functions, make this a real reusable pipeline (at the basic level) '''
-
 # Pull data from API
-# Clean and reshape data
+# Clean data
+# Reshape data
 # Compute metrics
+# Compute correlation
 # Generate graph
 # Export
 
@@ -405,10 +406,10 @@ def extract_steo_data(series_ids, api_key):
   data = response.json()
   return data["response"]["data"]
 
-records = extract_steo_data(["COPREF", "COPRPM", "COPRPUS", "WTIPUUS"], api_key)
+records = extract_steo_data(["COPREF", "COPRPM", "COPRPUS"], api_key)
 
-# Clean and reshape
-def clean_and_reshape(records):
+# Clean data
+def clean(records):
   df = pd.DataFrame(records)
   df["period"] = pd.to_datetime(df["period"])
   df["value"] = pd.to_numeric(df["value"])
@@ -419,30 +420,61 @@ def clean_and_reshape(records):
     "value": "Value",
     "unit": "Unit"
   })
+  return df
+
+# Reshape data
+def reshape(df):
   df = df.pivot_table(
     index="Date",
     values="Value",
     columns="ID"
   )
   df = df.rename_axis(columns=None)
+  df = df.rename(columns={
+    "COPREF": "EagleFordVol",
+    "COPRPM": "PermianVol",
+    "COPRPUS": "USVol"
+  })
+  df = df.reset_index()
+  df.insert(
+    loc=df.columns.get_loc("Date")+1,
+    column="Year",
+    value=df["Date"].dt.year
+  )
   return df
 
-df = clean_and_reshape(records)
+df = clean(records)
+df = reshape(df)
 df
 
-def compute_metrics(df, metrics=[
-  "pct_share", 
-  "growth_rate", 
-  "mean_threshold", 
-  "zscore"
-  ]):
-  return None
+# Compute metrics
+def compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "zscore"]):
+  df = df.groupby("Year")[["EagleFordVol", "PermianVol", "USVol"]].mean().reset_index()
+  if "pct_share" in metrics:
+    df["EagleFordPct"] = df["EagleFordVol"] / df["USVol"] * 100
+    df["PermianPct"] = df["PermianVol"] / df["USVol"] * 100
+    df["CombinedPct"] = (df["EagleFordVol"] + df["PermianVol"]) / df["USVol"] * 100
+  if "growth_rate" in metrics:
+    df["EagleFordGrowthRate"] = df["EagleFordVol"].pct_change() * 100
+    df["PermianGrowthRate"] = df["PermianVol"].pct_change() * 100
+    df["USGrowthRate"] = df["USVol"].pct_change() * 100
+  if "mean_threshold" in metrics:
+    return None
+  if "zscore" in metrics:
+    return None
+  return df.round(2)
 
+df = compute_metrics(df, metrics=["pct_share", "growth_rate"])
+df
+
+# Compute correlation
 def compute_correlation(df, price_records, lags=[0,1,3,6,12]):
   return None
 
+# Generate graph
 def generate_graph(df):
   return None
 
+# Export
 def export_results(df, filename):
   return None
