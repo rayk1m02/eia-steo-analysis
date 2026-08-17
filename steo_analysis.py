@@ -431,9 +431,9 @@ def reshape(df):
   )
   df = df.rename_axis(columns=None)
   df = df.rename(columns={
-    "COPREF": "EagleFordVol",
-    "COPRPM": "PermianVol",
-    "COPRPUS": "USVol"
+    "COPREF": "EF_Vol",
+    "COPRPM": "PB_Vol",
+    "COPRPUS": "US_Vol"
   })
   df = df.reset_index()
   df.insert(
@@ -449,17 +449,19 @@ df
 
 # Compute metrics
 def compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "zscore"]):
-  df = df.groupby("Year")[["EagleFordVol", "PermianVol", "USVol"]].mean().reset_index()
+  df = df.groupby("Year")[["EF_Vol", "PB_Vol", "US_Vol"]].mean().reset_index()
   if "pct_share" in metrics:
-    df["EagleFordPct"] = df["EagleFordVol"] / df["USVol"] * 100
-    df["PermianPct"] = df["PermianVol"] / df["USVol"] * 100
-    df["CombinedPct"] = (df["EagleFordVol"] + df["PermianVol"]) / df["USVol"] * 100
+    df["EF_Pct"] = df["EF_Vol"] / df["US_Vol"] * 100
+    df["PB_Pct"] = df["PB_Vol"] / df["US_Vol"] * 100
+    df["Combined_Pct"] = (df["EF_Vol"] + df["PB_Vol"]) / df["US_Vol"] * 100
   if "growth_rate" in metrics:
-    df["EagleFordGrowthRate"] = df["EagleFordVol"].pct_change() * 100
-    df["PermianGrowthRate"] = df["PermianVol"].pct_change() * 100
-    df["USGrowthRate"] = df["USVol"].pct_change() * 100
+    df["EF_GrowthRate"] = df["EF_Vol"].pct_change() * 100
+    df["PB_GrowthRate"] = df["PB_Vol"].pct_change() * 100
+    df["US_GrowthRate"] = df["US_Vol"].pct_change() * 100
   if "mean_threshold" in metrics:
-    return None
+    df["EF_Threshold"] = df["EF_GrowthRate"].abs() > df["EF_GrowthRate"].abs().mean() * 1.5
+    df["PB_Threshold"] = df["PB_GrowthRate"].abs() > df["PB_GrowthRate"].abs().mean() * 1.5
+    df["US_Threshold"] = df["US_GrowthRate"].abs() > df["US_GrowthRate"].abs().mean() * 1.5
   if "zscore" in metrics:
     return None
   return df.round(2)
@@ -478,3 +480,4 @@ def generate_graph(df):
 # Export
 def export_results(df, filename):
   return None
+# %%
