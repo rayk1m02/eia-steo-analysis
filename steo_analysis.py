@@ -307,6 +307,7 @@ data_WTI = response_WTI.json()
 data_WTI.keys()
 data_WTI["response"].keys()
 data_crude_price = data_WTI["response"]["data"]
+data_crude_price
 df_crude_price = pd.DataFrame(data_crude_price)
 df_crude_price["period"] = pd.to_datetime(df_crude_price["period"])
 df_crude_price["value"] = pd.to_numeric(df_crude_price["value"])
@@ -435,7 +436,8 @@ def reshape(df):
   df = df.rename(columns={
     "COPREF": "EF_Vol",
     "COPRPM": "PB_Vol",
-    "COPRPUS": "US_Vol"
+    "COPRPUS": "US_Vol",
+    "WTIPUUS": "Crude_Price"
   })
   df = df.reset_index()
   df.insert(
@@ -446,6 +448,7 @@ def reshape(df):
   return df
 
 df = clean(records)
+df
 df = reshape(df)
 df
 
@@ -470,16 +473,42 @@ def compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "
     df["US_Z"] = (df["US_GrowthRate"].abs() - df["US_GrowthRate"].abs().mean()) / df["US_GrowthRate"].abs().std()
   return df.round(2)
 
-df = compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "zscore"])
-df.style.format({
+df_yearly = compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "zscore"])
+df_yearly
+df_yearly.style.format({
     "EF_Threshold": lambda x: "True" if x else "",
     "PB_Threshold": lambda x: "True" if x else "",
     "US_Threshold": lambda x: "True" if x else "",
 }, na_rep="")
 
 # Compute correlation
-def compute_correlation(df, price_records, lags=[0,1,3,6,12]):
-  return None
+def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
+  # call extract_steo_data(), clean(), and reshape() on series_id (essentially a price series)
+  # df - this needs to be df pre-compute_metrics()
+  records_price = extract_steo_data(series_id, api_key)
+  df_price = clean(records_price)
+  df_price = reshape(df_price)
+  df = df.merge(df_price[["Date", "Crude_Price"]], on="Date")
+
+  if 1 in lags:
+    df["Crude_Price_Lag1"] = df["Crude_Price"].shift(1)
+  if 3 in lags:
+    df["Crude_Price_Lag3"] = df["Crude_Price"].shift(3)
+  if 6 in lags:
+    df["Crude_Price_Lag6"] = df["Crude_Price"].shift(6)
+  if 12 in lags:
+    df["Crude_Price_Lag12"] = df["Crude_Price"].shift(12)
+
+  if start_year is not None:
+    df = df[df["Date"].dt.year >= start_year]
+    
+  return df
+
+df_monthly = clean(records)
+df_monthly = reshape(df_monthly)
+df_monthly
+df_monthly = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2000)
+df_monthly.style.format(na_rep="")
 
 # Generate graph
 def generate_graph(df):
@@ -488,4 +517,3 @@ def generate_graph(df):
 # Export
 def export_results(df, filename):
   return None
-# %%
