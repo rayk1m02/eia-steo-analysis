@@ -20,6 +20,11 @@ EIA_TOKEN=your_key_here
 python steo_analysis.py
 ```
 
+## Project Structure
+
+- `steo_analysis.py` — exploratory script including iterations and documentation
+- `eia_steo_pipeline.py` — refactored and reusable pipeline version of the same analysis, organized into discrete functions (extract, clean, reshape, compute metrics, compute correlation, generate graph, and export results)
+
 ## Findings
 ![Crude production volume chart](images/volGraph.png)
 
