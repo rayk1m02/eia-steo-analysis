@@ -431,13 +431,14 @@ df = clean_and_reshape(records)
 df
 
 def compute_metrics(df, metrics=[
-  "vol", 
   "pct_share", 
   "growth_rate", 
   "mean_threshold", 
-  "zscore",
-  "price_correlation"
+  "zscore"
   ]):
+  return None
+
+def compute_correlation(df, price_records, lags=[0,1,3,6,12]):
   return None
 
 def generate_graph(df):
