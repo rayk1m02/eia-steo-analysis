@@ -23,6 +23,12 @@ python steo_analysis.py
 ## Findings
 ![Crude production volume chart](images/volGraph.png)
 
+## Output
+
+Cleaned data exports available in [`output/`](output/):
+- `texas_production_and_share.csv` — yearly production, growth rates, and % share of US total
+- `texas_production_price_correlation.csv` — production merged with lagged crude price data
+
 ## Data Sources
 [EIA Short-Term Energy Outlook](https://www.eia.gov/outlooks/steo/) —
 monthly-updated 18-month-ahead forecasts covering production,
