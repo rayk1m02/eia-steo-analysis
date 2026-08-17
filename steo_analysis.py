@@ -379,3 +379,6 @@ plt.show()
   - export findings to csv file
   - refactor code into functions, make this a real reusable pipeline (at the basic level)
 '''
+# which dataframes should be exported to csv?
+df_steo_pct.to_csv("texas_production_and_share.csv", index=True)
+df_steo_crude_merged.to_csv("texas_production_price_correlation.csv", index=True)
