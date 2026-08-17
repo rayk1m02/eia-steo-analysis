@@ -260,6 +260,8 @@ df_steo_z_filtered_strict
   # Also there was an increase in scale of completions to open up oil-bearing shale. The Permian is multi layered, and operators mastered pad drilling (using a single surface rig to drill dozen horizontal wells in different subterranean layers simultaneously).
   # All of this caused a major infrastructure crisis in 2018 as there were pipeline shortages (too much oil) and subsequently local prices collapsed ($15-$18 less a barrel!) than the U.S. benchmark pricing. 
   # Operators also had to burn off significant amounts of natural gas just to keep the oil flowing.
+# 2014 US Total:
+  # We see that the US experienced one of its largest volume increaess (z-score of 2.58) due to rapid expansion of the domestic shale boom. 
 
 '''
 - correlate crude price series (WTI/Brent) against production volumes at zero lag as baseline, then lag intervals of (1,3,6,12 months) to see if delay strengthens the relationship. We are testing whether production responds to price changes only after drilling catches up.
@@ -463,11 +465,17 @@ def compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "
     df["PB_Threshold"] = df["PB_GrowthRate"].abs() > df["PB_GrowthRate"].abs().mean() * 1.5
     df["US_Threshold"] = df["US_GrowthRate"].abs() > df["US_GrowthRate"].abs().mean() * 1.5
   if "zscore" in metrics:
-    return None
+    df["EF_Z"] = (df["EF_GrowthRate"].abs() - df["EF_GrowthRate"].abs().mean()) / df["EF_GrowthRate"].abs().std()
+    df["PB_Z"] = (df["PB_GrowthRate"].abs() - df["PB_GrowthRate"].abs().mean()) / df["PB_GrowthRate"].abs().std()
+    df["US_Z"] = (df["US_GrowthRate"].abs() - df["US_GrowthRate"].abs().mean()) / df["US_GrowthRate"].abs().std()
   return df.round(2)
 
-df = compute_metrics(df, metrics=["pct_share", "growth_rate"])
-df
+df = compute_metrics(df, metrics=["pct_share", "growth_rate", "mean_threshold", "zscore"])
+df.style.format({
+    "EF_Threshold": lambda x: "True" if x else "",
+    "PB_Threshold": lambda x: "True" if x else "",
+    "US_Threshold": lambda x: "True" if x else "",
+}, na_rep="")
 
 # Compute correlation
 def compute_correlation(df, price_records, lags=[0,1,3,6,12]):
