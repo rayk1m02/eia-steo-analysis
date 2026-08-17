@@ -375,10 +375,73 @@ plt.xlabel("Date")
 plt.tight_layout()
 plt.show()
 
-'''
-  - export findings to csv file
-  - refactor code into functions, make this a real reusable pipeline (at the basic level)
-'''
+''' - export findings to csv file '''
 # which dataframes should be exported to csv?
 df_steo_pct.to_csv("texas_production_and_share.csv", index=True)
 df_steo_crude_merged.to_csv("texas_production_price_correlation.csv", index=True)
+
+''' - refactor code into functions, make this a real reusable pipeline (at the basic level) '''
+
+# Pull data from API
+# Clean and reshape data
+# Compute metrics
+# Generate graph
+# Export
+
+# Pull data from API
+def extract_steo_data(series_ids, api_key):
+  url = "https://api.eia.gov/v2/steo/data/"
+  params = {
+    "api_key": api_key,
+    "data[]": "value",
+    "facets[seriesId][]": series_ids,
+    "frequency": "monthly",
+    "sort[0][column]": "period",
+    "sort[0][direction]": "desc",
+    "length": 5000,
+  }
+  response = requests.get(url, params=params)
+  response.raise_for_status()
+  data = response.json()
+  return data["response"]["data"]
+
+records = extract_steo_data(["COPREF", "COPRPM", "COPRPUS", "WTIPUUS"], api_key)
+
+# Clean and reshape
+def clean_and_reshape(records):
+  df = pd.DataFrame(records)
+  df["period"] = pd.to_datetime(df["period"])
+  df["value"] = pd.to_numeric(df["value"])
+  df = df.rename(columns={
+    "period": "Date",
+    "seriesId": "ID",
+    "seriesDescription": "Description",
+    "value": "Value",
+    "unit": "Unit"
+  })
+  df = df.pivot_table(
+    index="Date",
+    values="Value",
+    columns="ID"
+  )
+  df = df.rename_axis(columns=None)
+  return df
+
+df = clean_and_reshape(records)
+df
+
+def compute_metrics(df, metrics=[
+  "vol", 
+  "pct_share", 
+  "growth_rate", 
+  "mean_threshold", 
+  "zscore",
+  "price_correlation"
+  ]):
+  return None
+
+def generate_graph(df):
+  return None
+
+def export_results(df, filename):
+  return None
