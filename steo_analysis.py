@@ -565,5 +565,7 @@ def generate_graph(df):
 generate_graph(df)
 
 # Export
-def export_results(df, filename):
-  return None
+def export_results(df, filename, index=True):
+  df.to_csv(filename, index=index)
+
+# Document findings in README.md
