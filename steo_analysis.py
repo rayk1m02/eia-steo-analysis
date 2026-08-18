@@ -499,15 +499,54 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
   if 12 in lags:
     df["Crude_Price_Lag12"] = df["Crude_Price"].shift(12)
 
+  # create a summary dataframe for correlation coefficients
+
+  # Lag                 EF_Corr PB_Corr US_Corr
+  # Crude_Price
+  # Crude_Price_Lag1
+  # Crude_Price_Lag2
+  # Crude_Price_Lag3
+
+  lag_header = [
+    "Crude_Price", 
+    "Crude_Price_Lag1", 
+    "Crude_Price_Lag3", 
+    "Crude_Price_Lag6", 
+    "Crude_Price_Lag12"
+    ]
+
+  res = []
+
+  # [{"Lag": lag_header[i], "EF_Corr": 0.321, "PB_Corr": 0.324, "US_Corr": 0.432},
+  #  {"Lag": lag_header[i+1], "EF_Corr": 0.331, "PB_Corr": 0.321, "US_Corr": 0.231},
+  #  ...
+  # ]
+
+  for lag in lag_header:
+    lag_row = {
+      "Lag": lag,
+      "EF_Corr": df["EF_Vol"].corr(df[{lag}]),
+      "PB_Corr": df["PB_Vol"].corr(df[{lag}]),
+      "US_Corr": df["US_Vol"].corr(df[{lag}])
+    }
+    res.append(lag_row)
+
+  
+
+
   if start_year is not None:
     df = df[df["Date"].dt.year >= start_year]
     
+  # numeric_cols = ["EF_Vol", "PB_Vol", "US_Vol", "Crude_Price"] + [f"Crude_Price_Lag{lag}" for lag in lags]
+  # df[numeric_cols] = df[numeric_cols].round(2)
   return df
 
 df_monthly = clean(records)
 df_monthly = reshape(df_monthly)
 df_monthly
-df_monthly = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2000)
+df_monthly = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2020)
+# df_monthly.style.format("{:.2f}", na_rep="")
+# figure out round(2) formatting
 df_monthly.style.format(na_rep="")
 
 # Generate graph
@@ -517,3 +556,4 @@ def generate_graph(df):
 # Export
 def export_results(df, filename):
   return None
+# %%
