@@ -48,7 +48,7 @@ Using both a threshold method (year-over-year change exceeding 1.5x the regional
 
 ### Outliers Cause
 
-**2011 — Eagle Ford:** Horizontal drilling paths were completed and hydraulic fracturing expanded rapidly across South Texas. Over 2,800 drilling permits were issued that year, with rig and well completions accelerating production sharply.
+**2011 — Eagle Ford:** Horizontal drilling paths were completed and hydraulic fracturing expanded rapidly across South Texas. Over 2,800 drilling permits were issued that year, with rig and well completions accelerating production.
 
 **2018 — Permian Basin:** Operators shifted to "super-lateral" wells (stretching 2-3 miles, versus roughly 1 mile in 2011) and mastered pad drilling — using a single surface rig to drill multiple horizontal wells across the Permian's multiple subterranean layers simultaneously. Production grew so fast it outpaced regional pipeline capacity, causing a real infrastructure crisis: local prices collapsed $15-18/barrel below the US benchmark, and operators had to flare significant volumes of natural gas just to keep oil flowing.
 
