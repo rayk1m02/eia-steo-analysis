@@ -39,7 +39,7 @@ Eagle Ford drove the early shale boom, with significant percentage swings of up 
 
 A region's growth rate volatility naturally declines as its production base matures. Based on `texas_production_and_share.csv` and the z-scores computed, Eagle Ford's year-over-year volatility (`EF_Z`) was concentrated in 2010 to 2012, peaking in 2011, during its early boom. The Permian's (`PB_Z`) volatility came later, from 2017 to 2019, peaking in 2018, as it entered its own growth period.
 
-Using both a threshold method (year-over-year change exceeding 1.5x the regional mean) and z-score analysis (|z| > 2), two years stand out as statistical outliers.
+Using both a threshold method (year-over-year change exceeding 1.5x the regional mean) and z-score analysis (|z| > 2), the two years stand out as statistical outliers.
 
 - **2011 — Eagle Ford** (z = 3.27, growth rate 217.37%)
 - **2018 — Permian Basin** (z = 2.84, growth rate 39.74%)
