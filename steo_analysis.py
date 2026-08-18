@@ -507,13 +507,14 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
   # Crude_Price_Lag2
   # Crude_Price_Lag3
 
-  lag_header = [
-    "Crude_Price", 
-    "Crude_Price_Lag1", 
-    "Crude_Price_Lag3", 
-    "Crude_Price_Lag6", 
-    "Crude_Price_Lag12"
-    ]
+  # lag_header = [
+  #   "Crude_Price", 
+  #   "Crude_Price_Lag1", 
+  #   "Crude_Price_Lag3", 
+  #   "Crude_Price_Lag6", 
+  #   "Crude_Price_Lag12"
+  #   ]
+  lag_header = ["Crude_Price"] + [f"Crude_Price_Lag{lag}" for lag in lags]
 
   res = []
 
@@ -525,29 +526,30 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
   for lag in lag_header:
     lag_row = {
       "Lag": lag,
-      "EF_Corr": df["EF_Vol"].corr(df[{lag}]),
-      "PB_Corr": df["PB_Vol"].corr(df[{lag}]),
-      "US_Corr": df["US_Vol"].corr(df[{lag}])
+      "EF_Corr": df["EF_Vol"].corr(df[lag]),
+      "PB_Corr": df["PB_Vol"].corr(df[lag]),
+      "US_Corr": df["US_Vol"].corr(df[lag])
     }
     res.append(lag_row)
 
-  
-
+  df_summary = pd.DataFrame(res).round(3)
 
   if start_year is not None:
     df = df[df["Date"].dt.year >= start_year]
     
   # numeric_cols = ["EF_Vol", "PB_Vol", "US_Vol", "Crude_Price"] + [f"Crude_Price_Lag{lag}" for lag in lags]
   # df[numeric_cols] = df[numeric_cols].round(2)
-  return df
+  return df, df_summary
 
 df_monthly = clean(records)
 df_monthly = reshape(df_monthly)
 df_monthly
-df_monthly = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2020)
-# df_monthly.style.format("{:.2f}", na_rep="")
-# figure out round(2) formatting
-df_monthly.style.format(na_rep="")
+df_monthly, df_summary = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2020)
+
+float_cols = df_monthly.select_dtypes(include="float").columns
+df_monthly.style.format({col: "{:.2f}" for col in float_cols}, na_rep="")
+
+df_summary
 
 # Generate graph
 def generate_graph(df):
