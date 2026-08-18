@@ -29,9 +29,7 @@ python steo_analysis.py
 
 ![Crude production volume chart](images/volGraph.png)
 
-*Note: a "play" refers to a geographic region with a known, economically
-producible concentration of oil or gas. Eagle Ford and the Permian Basin
-are both examples of shale plays in Texas.*
+*Note: a "play" refers to a geographic region with a known, economically producible concentration of oil or gas. Eagle Ford and the Permian Basin are the two largest oil-producing shale plays in Texas.*
 
 ### Production Trend
 
