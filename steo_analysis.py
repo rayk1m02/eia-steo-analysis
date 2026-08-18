@@ -380,8 +380,8 @@ plt.show()
 
 ''' - export findings to csv file '''
 # which dataframes should be exported to csv?
-df_steo_pct.to_csv("output/texas_production_and_share.csv", index=True)
-df_steo_crude_merged.to_csv("output/texas_production_price_correlation.csv", index=True)
+# df_steo_pct.to_csv("output/texas_production_and_share.csv", index=True)
+# df_steo_crude_merged.to_csv("output/texas_production_price_correlation.csv", index=True) # this should actually be the summary df, not the merged df
 
 ''' - refactor code into functions, make this a real reusable pipeline (at the basic level) '''
 # Pull data from API
@@ -482,7 +482,7 @@ df_yearly.style.format({
 }, na_rep="")
 
 # Compute correlation
-def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
+def compute_correlation(df, series_id, api_key, lags=[1,3,6,12], start_year=None):
   # call extract_steo_data(), clean(), and reshape() on series_id (essentially a price series)
   # df - this needs to be df pre-compute_metrics()
   records_price = extract_steo_data(series_id, api_key)
@@ -544,7 +544,7 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
 df_monthly = clean(records)
 df_monthly = reshape(df_monthly)
 df_monthly
-df_monthly, df_summary = compute_correlation(df_monthly, ["WTIPUUS"], lags=[1,3,6,12], start_year=2020)
+df_monthly, df_summary = compute_correlation(df_monthly, ["WTIPUUS"], api_key, lags=[1,3,6,12], start_year=2020)
 
 float_cols = df_monthly.select_dtypes(include="float").columns
 df_monthly.style.format({col: "{:.2f}" for col in float_cols}, na_rep="")
@@ -568,4 +568,4 @@ generate_graph(df)
 def export_results(df, filename, index=True):
   df.to_csv(filename, index=index)
 
-# Create eia_steo_pipeline.py
+# Create eia_steo_pipeline.py   
