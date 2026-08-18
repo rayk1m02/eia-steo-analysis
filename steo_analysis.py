@@ -488,16 +488,16 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
   records_price = extract_steo_data(series_id, api_key)
   df_price = clean(records_price)
   df_price = reshape(df_price)
-  df = df.merge(df_price[["Date", "Crude_Price"]], on="Date")
+  df_res = df.merge(df_price[["Date", "Crude_Price"]], on="Date")
 
   if 1 in lags:
-    df["Crude_Price_Lag1"] = df["Crude_Price"].shift(1)
+    df_res["Crude_Price_Lag1"] = df_res["Crude_Price"].shift(1)
   if 3 in lags:
-    df["Crude_Price_Lag3"] = df["Crude_Price"].shift(3)
+    df_res["Crude_Price_Lag3"] = df_res["Crude_Price"].shift(3)
   if 6 in lags:
-    df["Crude_Price_Lag6"] = df["Crude_Price"].shift(6)
+    df_res["Crude_Price_Lag6"] = df_res["Crude_Price"].shift(6)
   if 12 in lags:
-    df["Crude_Price_Lag12"] = df["Crude_Price"].shift(12)
+    df_res["Crude_Price_Lag12"] = df_res["Crude_Price"].shift(12)
 
   # create a summary dataframe for correlation coefficients
 
@@ -526,20 +526,20 @@ def compute_correlation(df, series_id, lags=[1,3,6,12], start_year=None):
   for lag in lag_header:
     lag_row = {
       "Lag": lag,
-      "EF_Corr": df["EF_Vol"].corr(df[lag]),
-      "PB_Corr": df["PB_Vol"].corr(df[lag]),
-      "US_Corr": df["US_Vol"].corr(df[lag])
+      "EF_Corr": df_res["EF_Vol"].corr(df_res[lag]),
+      "PB_Corr": df_res["PB_Vol"].corr(df_res[lag]),
+      "US_Corr": df_res["US_Vol"].corr(df_res[lag])
     }
     res.append(lag_row)
 
   df_summary = pd.DataFrame(res).round(3)
 
   if start_year is not None:
-    df = df[df["Date"].dt.year >= start_year]
+    df_res = df_res[df_res["Date"].dt.year >= start_year]
     
   # numeric_cols = ["EF_Vol", "PB_Vol", "US_Vol", "Crude_Price"] + [f"Crude_Price_Lag{lag}" for lag in lags]
   # df[numeric_cols] = df[numeric_cols].round(2)
-  return df, df_summary
+  return df_res, df_summary
 
 df_monthly = clean(records)
 df_monthly = reshape(df_monthly)
@@ -553,9 +553,17 @@ df_summary
 
 # Generate graph
 def generate_graph(df):
-  return None
+  df_graph = df.set_index("Date")[["EF_Vol", "PB_Vol", "US_Vol"]]
+  plt.figure(figsize=(10,6))
+  df_graph.plot(ax=plt.gca())
+  plt.title("Crude Oil Production Volume: Eagle Ford, Permian, and US Total")
+  plt.ylabel("Million Barrels per Day")
+  plt.xlabel("Date")
+  plt.tight_layout()
+  plt.show()
+
+generate_graph(df)
 
 # Export
 def export_results(df, filename):
   return None
-# %%
