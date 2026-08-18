@@ -116,6 +116,7 @@ def generate_graph(df):
   plt.ylabel("Million Barrels per Day")
   plt.xlabel("Date")
   plt.tight_layout()
+  plt.savefig("images/volGraph.png")
   plt.show()
 
 def export_results(df, filename, index=True):
