@@ -380,8 +380,8 @@ plt.show()
 
 ''' - export findings to csv file '''
 # which dataframes should be exported to csv?
-df_steo_pct.to_csv("texas_production_and_share.csv", index=True)
-df_steo_crude_merged.to_csv("texas_production_price_correlation.csv", index=True)
+df_steo_pct.to_csv("output/texas_production_and_share.csv", index=True)
+df_steo_crude_merged.to_csv("output/texas_production_price_correlation.csv", index=True)
 
 ''' - refactor code into functions, make this a real reusable pipeline (at the basic level) '''
 # Pull data from API
